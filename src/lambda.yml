@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Template for Lambda, S3, and Creating Execution role for Lambda.
+
+Resources:
+  SSMGetParamAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: SSMGetParamAccessRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: MyLambdaPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ssm:GetParameter
+                Resource: '*'
+
+  AWSSSMDemoBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: aws-ssm-demo-bucket
+
+  GetSSMParam:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: get_ssm_param_lambda.lambda_handler
+      Role: !GetAtt SSMGetParamAccessRole.Arn
+      FunctionName: GetSSMParam
+      Code:
+        S3Bucket: !Ref AWSSSMDemoBucket
+        S3Key: get_ssm_param_lambda.zip
