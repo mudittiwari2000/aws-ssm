@@ -31,4 +31,5 @@ Resources:
       FunctionName: GetSSMParam
       Runtime: python3.9
       Code:
-        S3Bucket: aws-ssm-lambda-demo
+        S3Bucket: aws-ssm-lambda-demo-bucket
+        S3Key: lambda/get_ssm_param_lambda.zip
