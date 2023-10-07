@@ -35,6 +35,4 @@ Resources:
       Role: !GetAtt SSMGetParamAccessRole.Arn
       FunctionName: GetSSMParam
       Runtime: python3.9
-      Code:
-        S3Bucket: !Ref AWSSSMDemoBucket
-        S3Key: Archive.zip
+      Code: {}
