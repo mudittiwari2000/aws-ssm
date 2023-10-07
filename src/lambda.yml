@@ -23,11 +23,6 @@ Resources:
                   - ssm:GetParameter
                 Resource: '*'
 
-  AWSSSMDemoBucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: aws-ssm-demo-bucket
-
   GetSSMParam:
     Type: AWS::Lambda::Function
     Properties:
@@ -35,6 +30,3 @@ Resources:
       Role: !GetAtt SSMGetParamAccessRole.Arn
       FunctionName: GetSSMParam
       Runtime: python3.9
-      Code:
-        S3Bucket: !Ref AWSSSMDemoBucket
-        S3Key: get_ssm_param_lambda.zip
