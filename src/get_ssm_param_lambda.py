@@ -1,17 +1,34 @@
 import boto3
+import json
+
+ssm = boto3.client('ssm')
 
 
 def lambda_handler(event, context):
-    parameter_name = print(event)
-    ssm_client = boto3.client('ssm')
-
-    parameter_name = 'YourParameterNameHere'
-
     try:
-        # Query the SSM parameter
-        response = ssm_client.get_parameter(
-            Name=parameter_name, WithDecryption=True)
+        request_body = json.loads(event['body'])
+        parameter_name = request_body.get('parameter_name')
+    except (json.JSONDecodeError, KeyError):
+        return {
+            'statusCode': 400,
+            'body': 'Invalid request body'
+        }
+
+    if not parameter_name:
+        return {
+            'statusCode': 400,
+            'body': 'Parameter name not provided in request body'
+        }
+    try:
+        response = ssm.get_parameter(Name=parameter_name, WithDecryption=True)
         parameter_value = response['Parameter']['Value']
-        return parameter_value
-    except Exception as e:
-        return str(e)
+    except ssm.exceptions.ParameterNotFound:
+        return {
+            'statusCode': 404,
+            'body': f'SSM Parameter not found: {parameter_name}'
+        }
+
+    return {
+        'statusCode': 200,
+        'body': f'SSM Parameter Value: {parameter_value}'
+    }
