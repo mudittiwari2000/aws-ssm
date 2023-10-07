@@ -32,4 +32,3 @@ Resources:
       Runtime: python3.9
       Code:
         S3Bucket: aws-ssm-lambda-demo
-        S3Key: Archive.zip
